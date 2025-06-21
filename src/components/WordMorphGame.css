@@ -1,0 +1,61 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  background-color: #fbe4ec;
+  font-family: 'Rubik Mono One', monospace;
+}
+
+.game {
+  text-align: center;
+  padding: 2rem;
+  color: #3e003e;
+}
+
+.logo {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #ff66a5;
+}
+
+button {
+  padding: 0.8rem 1.4rem;
+  background-color: #ff85b3;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ff6d9c;
+}
+
+.word {
+  font-size: 2rem;
+  margin: 2rem 0;
+  transition: opacity 0.4s;
+}
+
+.recall textarea {
+  width: 80%;
+  height: 100px;
+  margin-top: 1rem;
+  border-radius: 8px;
+  padding: 0.5rem;
+  font-family: monospace;
+}
+
+.result {
+  margin-top: 2rem;
+}
+
+.feedback-img {
+  width: 200px;
+  margin-top: 1rem;
+}
+
+.difficulty, .language {
+  margin: 1rem 0;
+}
