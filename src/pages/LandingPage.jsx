@@ -13,29 +13,6 @@ import winImg from '../assets/win.png';
 import loseImg from '../assets/lose.png';
 import winSoundFile from '../assets/win.MP3';
 import loseSoundFile from '../assets/lose.MP3';
-
-function LandingPage() {
-  const [step, setStep] = useState("landing");
-  const [showSecondLogo, setShowSecondLogo] = useState(false);
-  const [language, setLanguage] = useState('EN');
-
-  const [category, setCategory] = useState('');
-  const [difficulty, setDifficulty] = useState('');
-  const [showHelp, setShowHelp] = useState(false);
-
-  const [wordSequence, setWordSequence] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentWord, setCurrentWord] = useState('');
-
-  const [recallAnswers, setRecallAnswers] = useState([]);
-
-  const [isWin, setIsWin] = useState(false);
-
-  const winSound = useRef(null);
-  const loseSound = useRef(null);
-
-  const isFR = language === 'FR';
-
   const wordDict = {
     EN: {
       fruits: {
@@ -78,6 +55,29 @@ function LandingPage() {
       }
     }
   };
+
+function LandingPage() {
+  const [step, setStep] = useState("landing");
+  const [showSecondLogo, setShowSecondLogo] = useState(false);
+  const [language, setLanguage] = useState('EN');
+
+  const [category, setCategory] = useState('');
+  const [difficulty, setDifficulty] = useState('');
+  const [showHelp, setShowHelp] = useState(false);
+
+  const [wordSequence, setWordSequence] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentWord, setCurrentWord] = useState('');
+
+  const [recallAnswers, setRecallAnswers] = useState([]);
+
+  const [isWin, setIsWin] = useState(false);
+
+  const winSound = useRef(null);
+  const loseSound = useRef(null);
+
+  const isFR = language === 'FR';
+
 
   useEffect(() => {
     if (step === 'landing') {
