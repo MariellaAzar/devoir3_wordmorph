@@ -13,15 +13,11 @@ import winImg from '../assets/win.png';
 import loseImg from '../assets/lose.png';
 import winSoundFile from '../assets/win.MP3';
 import loseSoundFile from '../assets/lose.MP3';
-import bipSoundFile from '../assets/bip.MP3';
-import correctSoundFile from '../assets/correct.MP3';
 import confetti from 'canvas-confetti';
 
 import { db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
-const categories = ['fruits', 'animals', 'objects'];
-const difficulties = ['easy', 'medium', 'hard', 'insane'];
 
 const wordDict = {
   EN: {
@@ -211,7 +207,7 @@ function LandingPage() {
 
   useEffect(() => {
     fetchBestScore();
-  }, [category, difficulty, language]);
+  }, [category, difficulty, language, fetchBestScore]);
 
   const handleRecallChange = (index, value) => {
     const newAnswers = [...recallAnswers];
