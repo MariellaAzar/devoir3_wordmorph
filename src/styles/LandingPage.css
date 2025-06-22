@@ -416,3 +416,268 @@
   font-family: 'Roboto Mono', monospace;
   font-size: 16px;
 }
+
+/* Recall Screen */
+.recall-screen {
+  padding: 1em;
+  text-align: center;
+  color: #7F004F; /* ou noir */
+  font-family: 'Roboto Mono', monospace;
+}
+
+.recall-instruction {
+  margin-bottom: 1em;
+  font-size: 1rem;
+}
+
+.recall-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 2em;
+}
+
+.recall-word-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.recall-letter-input {
+  border: 2px solid white;
+  border-radius: 0.3em;
+  background-color: #FFCEE9;
+  color: #7F004F;
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: 'Roboto Mono', monospace;
+  outline: none;
+}
+
+.recall-letter-input:focus {
+  border-color: #A81A60;
+  background-color: #fff;
+}
+
+.submit-recall-button {
+  margin-top: 1.5em;
+  background-color: #A81A60;
+  border: none;
+  color: white;
+  padding: 0.6em 2em;
+  font-size: 1.1rem;
+  font-family: 'Roboto Mono', monospace;
+  cursor: pointer;
+  border-radius: 0.4em;
+}
+
+.submit-recall-button:hover {
+  background-color: #7F004F;
+}
+
+/* Result Screen */
+.result-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #7F004F;
+  font-family: 'Roboto Mono', monospace;
+  gap: 1em;
+}
+
+.result-image {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 1em;
+}
+
+.restart-button {
+  background-color: #A81A60;
+  border: none;
+  color: white;
+  padding: 0.8em 3em;
+  font-size: 1.2rem;
+  font-family: 'Roboto Mono', monospace;
+  cursor: pointer;
+  border-radius: 0.5em;
+}
+
+.restart-button:hover {
+  background-color: #7F004F;
+}
+
+.recall-screen {
+  background-color: #FFCEE9 !important; /* assure fond rose */
+  border-radius: 8px;
+  padding: 1rem;
+  color: #7F004F;
+  font-family: 'Roboto Mono', monospace;
+  text-align: center;
+}
+
+.recall-inputs-container {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 2px solid white;
+  background-color: #FFCEE9;
+  box-sizing: border-box;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: nowrap;
+  justify-content: center;
+}
+
+.recall-word {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 1;
+  min-width: 0; /* important for flex shrink */
+}
+
+.recall-word input {
+  min-width: 2.2rem;
+  max-width: 3rem;
+  flex-shrink: 0;
+  flex-grow: 0;
+  height: 2.8rem;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  font-family: 'Roboto Mono', monospace;
+  border-radius: 8px;
+  border: 2px solid white;
+  background-color: #FFCEE9;
+  color: #7F004F;
+  text-transform: uppercase;
+  user-select: none;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* Input focus style */
+.recall-word input:focus {
+  border-color: #A81A60;
+  background-color: #fff;
+}
+.recall-screen {
+  background-color: #FFCEE9 !important;
+  border-radius: 8px;
+  padding: 1rem;
+  color: #7F004F;
+  font-family: 'Roboto Mono', monospace;
+  text-align: center;
+}
+
+.recall-inputs-container {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 2px solid white;
+  background-color: #FFCEE9;
+  box-sizing: border-box;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: nowrap;
+  justify-content: center;
+}
+
+.recall-word {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.recall-word input {
+  min-width: 2.2rem;
+  max-width: 3rem;
+  flex-shrink: 0;
+  flex-grow: 0;
+  height: 2.8rem;
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  font-family: 'Roboto Mono', monospace;
+  border-radius: 8px;
+  border: 2px solid white;
+  background-color: #FFCEE9;
+  color: #7F004F;
+  text-transform: uppercase;
+  user-select: none;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.recall-word input:focus {
+  border-color: #A81A60;
+  background-color: #fff;
+}
+/* Recall inputs vertical container */
+.recall-inputs-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 0 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Each recall input - smaller, full width */
+.recall-word-input {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.3rem;
+  padding: 8px 12px;
+  border: 2px solid #7F004F;
+  border-radius: 6px;
+  color: #7F004F;
+  background-color: #FFCEE9;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  text-transform: lowercase;
+}
+
+.recall-word-input::placeholder {
+  color: #a86a7f;
+  font-style: italic;
+}
+
+.recall-word-input:focus {
+  border-color: #A81A60;
+  background-color: #fff;
+}
+
+/* Exit button positioning on recall and selection */
+.exit-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: auto;
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* Submit button */
+.submit-recall-button {
+  margin-top: 1em;
+  background-color: #A81A60;
+  border: none;
+  color: white;
+  padding: 0.8em 2.5em;
+  font-size: 1.1rem;
+  font-family: 'Roboto Mono', monospace;
+  cursor: pointer;
+  border-radius: 0.4em;
+  align-self: center;
+  display: block;
+}
+
+.submit-recall-button:hover {
+  background-color: #7F004F;
+}
+

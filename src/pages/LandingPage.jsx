@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import '../styles/LandingPage.css';
 
 import logo1 from '../assets/logo1.png';
@@ -8,6 +8,11 @@ import startBtn from '../assets/img-start.png';
 import helpIcon from '../assets/interro-img.png';
 import exitIcon from '../assets/img-exit.png';
 import footerImg from '../assets/footer-img.png';
+
+import winImg from '../assets/win.png';
+import loseImg from '../assets/lose.png';
+import winSoundFile from '../assets/win.MP3';
+import loseSoundFile from '../assets/lose.MP3';
 
 function LandingPage() {
   const [step, setStep] = useState("landing");
@@ -21,6 +26,13 @@ function LandingPage() {
   const [wordSequence, setWordSequence] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentWord, setCurrentWord] = useState('');
+
+  const [recallAnswers, setRecallAnswers] = useState([]);
+
+  const [isWin, setIsWin] = useState(false);
+
+  const winSound = useRef(null);
+  const loseSound = useRef(null);
 
   const isFR = language === 'FR';
 
@@ -117,7 +129,6 @@ function LandingPage() {
         return;
       }
 
-      // Prendre la séquence demandée (ou la totalité si pas assez de mots)
       const sequence = wordsList.slice(0, wordsToDisplay);
 
       setWordSequence(sequence);
@@ -129,7 +140,10 @@ function LandingPage() {
           const nextIndex = prev + 1;
           if (nextIndex >= sequence.length) {
             clearInterval(interval);
-            setTimeout(() => setStep('recall'), 1000);
+            setTimeout(() => {
+              setRecallAnswers(Array(sequence.length).fill(''));
+              setStep('recall');
+            }, 1000);
             return prev;
           } else {
             setCurrentWord(sequence[nextIndex]);
@@ -142,19 +156,80 @@ function LandingPage() {
     }
   }, [step, difficulty, category, language, isFR]);
 
-  const handleLogoClick = () => {
-    window.location.reload();
+  const handleRecallChange = (index, value) => {
+    const newAnswers = [...recallAnswers];
+    newAnswers[index] = value.toLowerCase();
+    setRecallAnswers(newAnswers);
+  };
+
+  const handleRecallSubmit = () => {
+    let won = true;
+    for (let i = 0; i < wordSequence.length; i++) {
+      if ((recallAnswers[i] || '').trim().toLowerCase() !== wordSequence[i].toLowerCase()) {
+        won = false;
+        break;
+      }
+    }
+    setIsWin(won);
+    setStep('result');
+  };
+
+  const handleRestart = () => {
+    setStep('landing');
+    setCategory('');
+    setDifficulty('');
+    setShowHelp(false);
+    setShowSecondLogo(false);
+    setWordSequence([]);
+    setCurrentIndex(0);
+    setCurrentWord('');
+    setRecallAnswers([]);
+    setIsWin(false);
+  };
+
+  useEffect(() => {
+    if (step === 'result') {
+      if (isWin) {
+        winSound.current?.play();
+      } else {
+        loseSound.current?.play();
+      }
+    }
+  }, [step, isWin]);
+
+  const isValidInput = (word) => /^[a-zA-Z]+$/.test(word);
+
+  // Handle enter key to submit recall form
+  const handleRecallKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      // validate inputs before submit
+      if (recallAnswers.some(ans => !ans || !isValidInput(ans))) {
+        alert(isFR ? "Veuillez remplir tous les champs avec uniquement des lettres." : "Please fill all fields with letters only.");
+        return;
+      }
+      handleRecallSubmit();
+    }
+  };
+
+  // EXIT button handler: returns to landing screen, reset variables
+  const handleExitClick = () => {
+    setShowHelp(false);
+    setShowSecondLogo(true);
+    setStep('landing');
+    setCategory('');
+    setDifficulty('');
+    setRecallAnswers([]);
   };
 
   return (
     <div className="landing-page">
-      {/* Header */}
       <header className="navbar">
         <img
           src={logo1}
           alt="Logo 1"
           className="logo-small clickable-logo"
-          onClick={handleLogoClick}
+          onClick={() => window.location.reload()}
         />
         <div className="navbar-title">
           <span className="title-part roboto-28">Welcome</span>{' '}
@@ -168,7 +243,6 @@ function LandingPage() {
         </div>
       </header>
 
-      {/* Main */}
       <main className="main-content">
         <div className="black-box">
           {step === 'landing' && (
@@ -240,11 +314,7 @@ function LandingPage() {
                 src={exitIcon}
                 alt="Exit"
                 className="exit-button"
-                onClick={() => {
-                  setShowHelp(false);
-                  setShowSecondLogo(true);
-                  setStep("landing");
-                }}
+                onClick={handleExitClick}
               />
 
               {showHelp && (
@@ -273,10 +343,82 @@ function LandingPage() {
               </div>
             </div>
           )}
+
+          {step === 'recall' && (
+            <div className="recall-screen">
+              <h2 className="game-subtitle">{isFR ? "Rappelez-vous les mots" : "Recall the words"}</h2>
+              <p className="recall-instruction">
+                {isFR
+                  ? "Tapez chaque mot dans l'ordre correct. Un mot par champ."
+                  : "Type each word in the correct order. One word per field."}
+              </p>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (recallAnswers.some(ans => !ans || !isValidInput(ans))) {
+                    alert(isFR ? "Veuillez remplir tous les champs avec uniquement des lettres." : "Please fill all fields with letters only.");
+                    return;
+                  }
+                  handleRecallSubmit();
+                }}
+                onKeyDown={handleRecallKeyDown}
+              >
+                <div className="recall-inputs-vertical">
+                  {wordSequence.map((word, idx) => (
+                    <input
+                      key={idx}
+                      type="text"
+                      maxLength={word.length}
+                      className="recall-word-input"
+                      placeholder={`#${idx + 1}`}
+                      value={recallAnswers[idx] || ''}
+                      onChange={(e) => {
+                        const val = e.target.value.toLowerCase();
+                        // Only allow letters, max length enforced by maxLength prop
+                        if (/^[\p{L}]*$/u.test(val)) { // \p{L} = any Unicode letter, 'u' = Unicode flag
+                            handleRecallChange(idx, val);
+                        }
+
+                      }}
+                      spellCheck={false}
+                      autoComplete="off"
+                    />
+                  ))}
+                </div>
+
+                <button type="submit" className="submit-recall-button">
+                  {isFR ? "Valider" : "Submit"}
+                </button>
+              </form>
+
+              <img
+                src={exitIcon}
+                alt="Exit"
+                className="exit-button"
+                onClick={handleExitClick}
+              />
+            </div>
+          )}
+
+          {step === 'result' && (
+            <div className="result-screen">
+              <img
+                src={isWin ? winImg : loseImg}
+                alt={isWin ? (isFR ? "Vous avez gagné" : "You Win") : (isFR ? "Vous avez perdu" : "You Lose")}
+                className="result-image"
+              />
+              <button className="restart-button" onClick={handleRestart}>
+                {isFR ? "Rejouer" : "Play Again"}
+              </button>
+
+              <audio ref={winSound} src={winSoundFile} />
+              <audio ref={loseSound} src={loseSoundFile} />
+            </div>
+          )}
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="footer">
         <p className="footer-text">
           Made with ❤️ by User 01100001 01101110 01101111 01101110 01111001 01101101 01100101
