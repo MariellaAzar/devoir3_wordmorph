@@ -8,6 +8,7 @@ import startBtn from '../assets/img-start.png';
 import helpIcon from '../assets/interro-img.png';
 import exitIcon from '../assets/img-exit.png';
 import footerImg from '../assets/footer-img.png';
+import { useCallback } from "react";
 
 import winImg from '../assets/win.png';
 import loseImg from '../assets/lose.png';
@@ -176,20 +177,21 @@ function LandingPage() {
   };
 
   // Fetch best score from Firebase
-  const fetchBestScore = async () => {
-    if (!category || !difficulty) return;
-    try {
-      const docRef = doc(db, "leaderboard", `${language}-${category}-${difficulty}`);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setBestScore(docSnap.data().bestScore);
-      } else {
-        setBestScore(null);
-      }
-    } catch (error) {
-      console.error("Fetch best score error:", error);
+const fetchBestScore = useCallback(async () => {
+  if (!category || !difficulty) return;
+  try {
+    const docRef = doc(db, "leaderboard", `${language}-${category}-${difficulty}`);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      setBestScore(docSnap.data().bestScore);
+    } else {
+      setBestScore(null);
     }
-  };
+  } catch (error) {
+    console.error("Fetch best score error:", error);
+  }
+}, [category, difficulty, language]);
+
 
   // Save best score if better
   const saveBestScore = async (newScore) => {
@@ -205,9 +207,9 @@ function LandingPage() {
     }
   };
 
-  useEffect(() => {
-    fetchBestScore();
-  }, [category, difficulty, language, fetchBestScore]);
+useEffect(() => {
+  fetchBestScore();
+}, [fetchBestScore]);
 
   const handleRecallChange = (index, value) => {
     const newAnswers = [...recallAnswers];
