@@ -197,7 +197,7 @@ function LandingPage() {
     }
   }, [step, isWin]);
 
-  const isValidInput = (word) => /^[a-zA-Z]+$/.test(word);
+  const isValidInput = (word) => /^[\p{L}]+$/u.test(word);
 
   // Handle enter key to submit recall form
   const handleRecallKeyDown = (e) => {
