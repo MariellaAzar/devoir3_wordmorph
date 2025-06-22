@@ -1,11 +1,11 @@
 import React from 'react';
-import WordMorphGame from './components/WordMorphGame';
-import './components/WordMorphGame.css';
+import LandingPage from './pages/LandingPage';
+import './styles/LandingPage.css'; // Optional if you're importing CSS in LandingPage.jsx
 
 function App() {
   return (
     <div className="App">
-      <WordMorphGame />
+      <LandingPage />
     </div>
   );
 }
