@@ -681,3 +681,10 @@
   background-color: #7F004F;
 }
 
+
+.score-text {
+  color: #d063a6; 
+  font-weight: 700;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.2rem;
+}

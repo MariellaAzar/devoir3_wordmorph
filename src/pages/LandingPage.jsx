@@ -13,50 +13,62 @@ import winImg from '../assets/win.png';
 import loseImg from '../assets/lose.png';
 import winSoundFile from '../assets/win.MP3';
 import loseSoundFile from '../assets/lose.MP3';
-  const wordDict = {
-    EN: {
-      fruits: {
-        easy: ['fig', 'pea', 'yam'],
-        medium: ['apple', 'grape', 'mango', 'lemon', 'melon'],
-        hard: ['avocado', 'papaya', 'durian', 'pumpkin', 'cherry'],
-        insane: ['pomegranate', 'starfruit', 'watermelon', 'cranberries', 'grapefruit']
-      },
-      animals: {
-        easy: ['cat', 'dog', 'fox'],
-        medium: ['zebra', 'horse', 'shark', 'otter', 'eagle'],
-        hard: ['dolphin', 'leopard', 'crocodile', 'panther', 'buffalo'],
-        insane: ['alligatoridae', 'orangutaness', 'hippopotamus']
-      },
-      objects: {
-        easy: ['pen', 'cup', 'key'],
-        medium: ['table', 'chair', 'phone', 'watch', 'glass'],
-        hard: ['printer', 'cabinet', 'backpack', 'notebook', 'umbrella'],
-        insane: ['refrigerator', 'microwaveoven', 'televisionset']
-      }
+import bipSoundFile from '../assets/bip.MP3';
+import correctSoundFile from '../assets/correct.MP3';
+import confetti from 'canvas-confetti';
+
+import { db } from '../firebase';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+
+const categories = ['fruits', 'animals', 'objects'];
+const difficulties = ['easy', 'medium', 'hard', 'insane'];
+
+const wordDict = {
+  EN: {
+    fruits: {
+      easy: ['fig', 'pea', 'yam'],
+      medium: ['apple', 'grape', 'mango', 'lemon', 'melon'],
+      hard: ['avocado', 'papaya', 'durian', 'pumpkin', 'cherry'],
+      insane: ['pomegranate', 'starfruit', 'watermelon', 'cranberries', 'grapefruit']
     },
-    FR: {
-      fruits: {
-        easy: ['fig', 'riz', 'mûr'],
-        medium: ['pomme', 'raisin', 'melon', 'banan', 'ceris'],
-        hard: ['avocat', 'papaye', 'citron', 'potiron', 'cerise'],
-        insane: ['pomme grenade', 'carambole', 'pastèque', 'canneberge', 'pamplemousse']
-      },
-      animals: {
-        easy: ['rat', 'chat', 'pie'],
-        medium: ['zèbre', 'cheval', 'requin', 'loutre', 'aigle'],
-        hard: ['dauphin', 'léopard', 'crocodile', 'panthère', 'buffle'],
-        insane: ['alligatorid', 'orang-outan', 'hippopotam']
-      },
-      objects: {
-        easy: ['sty', 'tasse', 'clé'],
-        medium: ['table', 'chaise', 'téléph', 'montre', 'verre'],
-        hard: ['impriman', 'armoire', 'sac à dos', 'carnet', 'parapluie'],
-        insane: ['réfrigéra', 'micro-ondes', 'téléviseur']
-      }
+    animals: {
+      easy: ['cat', 'dog', 'fox'],
+      medium: ['zebra', 'horse', 'shark', 'otter', 'eagle'],
+      hard: ['dolphin', 'leopard', 'crocodile', 'panther', 'buffalo'],
+      insane: ['alligatoridae', 'orangutaness', 'hippopotamus']
+    },
+    objects: {
+      easy: ['pen', 'cup', 'key'],
+      medium: ['table', 'chair', 'phone', 'watch', 'glass'],
+      hard: ['printer', 'cabinet', 'backpack', 'notebook', 'umbrella'],
+      insane: ['refrigerator', 'microwaveoven', 'televisionset']
     }
-  };
+  },
+  FR: {
+    fruits: {
+      easy: ['fig', 'riz', 'mûr'],
+      medium: ['pomme', 'raisin', 'melon', 'banan', 'ceris'],
+      hard: ['avocat', 'papaye', 'citron', 'potiron', 'cerise'],
+      insane: ['pomme grenade', 'carambole', 'pastèque', 'canneberge', 'pamplemousse']
+    },
+    animals: {
+      easy: ['rat', 'chat', 'pie'],
+      medium: ['zèbre', 'cheval', 'requin', 'loutre', 'aigle'],
+      hard: ['dauphin', 'léopard', 'crocodile', 'panthère', 'buffle'],
+      insane: ['alligatorid', 'orang-outan', 'hippopotam']
+    },
+    objects: {
+      easy: ['sty', 'tasse', 'clé'],
+      medium: ['table', 'chaise', 'téléph', 'montre', 'verre'],
+      hard: ['impriman', 'armoire', 'sac à dos', 'carnet', 'parapluie'],
+      insane: ['réfrigéra', 'micro-ondes', 'téléviseur']
+    }
+  }
+};
 
 function LandingPage() {
+  const [mistakes, setMistakes] = useState(0);
+
   const [step, setStep] = useState("landing");
   const [showSecondLogo, setShowSecondLogo] = useState(false);
   const [language, setLanguage] = useState('EN');
@@ -72,12 +84,14 @@ function LandingPage() {
   const [recallAnswers, setRecallAnswers] = useState([]);
 
   const [isWin, setIsWin] = useState(false);
+  const [startTime, setStartTime] = useState(null);
+  const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(null);
 
   const winSound = useRef(null);
   const loseSound = useRef(null);
 
   const isFR = language === 'FR';
-
 
   useEffect(() => {
     if (step === 'landing') {
@@ -134,6 +148,7 @@ function LandingPage() {
       setWordSequence(sequence);
       setCurrentIndex(0);
       setCurrentWord(sequence[0]);
+      setStartTime(Date.now());
 
       const interval = setInterval(() => {
         setCurrentIndex((prev) => {
@@ -156,22 +171,90 @@ function LandingPage() {
     }
   }, [step, difficulty, category, language, isFR]);
 
+  // Calculate score helper
+  const calculateScore = (mistakesCount, startTimeValue) => {
+    const timeTaken = (Date.now() - startTimeValue) / 1000; // seconds
+    const baseScore = (wordSequence.length - mistakesCount) * 10;
+    const timeBonus = Math.max(0, 100 - timeTaken); // max 100 bonus points
+    return Math.round(baseScore + timeBonus);
+  };
+
+  // Fetch best score from Firebase
+  const fetchBestScore = async () => {
+    if (!category || !difficulty) return;
+    try {
+      const docRef = doc(db, "leaderboard", `${language}-${category}-${difficulty}`);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setBestScore(docSnap.data().bestScore);
+      } else {
+        setBestScore(null);
+      }
+    } catch (error) {
+      console.error("Fetch best score error:", error);
+    }
+  };
+
+  // Save best score if better
+  const saveBestScore = async (newScore) => {
+    try {
+      const docRef = doc(db, "leaderboard", `${language}-${category}-${difficulty}`);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists() || newScore > docSnap.data().bestScore) {
+        await setDoc(docRef, { bestScore: newScore });
+        setBestScore(newScore);
+      }
+    } catch (error) {
+      console.error("Save best score error:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBestScore();
+  }, [category, difficulty, language]);
+
   const handleRecallChange = (index, value) => {
     const newAnswers = [...recallAnswers];
     newAnswers[index] = value.toLowerCase();
     setRecallAnswers(newAnswers);
   };
 
+  const isValidInput = (word) => /^[\p{L}]+$/u.test(word);
+
   const handleRecallSubmit = () => {
-    let won = true;
+    if (recallAnswers.some(ans => !ans || !isValidInput(ans))) {
+      alert(isFR
+        ? "Veuillez remplir tous les champs avec uniquement des lettres."
+        : "Please fill all fields with letters only.");
+      return;
+    }
+
+    let mistakesCount = 0;
     for (let i = 0; i < wordSequence.length; i++) {
       if ((recallAnswers[i] || '').trim().toLowerCase() !== wordSequence[i].toLowerCase()) {
-        won = false;
-        break;
+        mistakesCount++;
       }
     }
-    setIsWin(won);
+
+    setMistakes(mistakesCount);
+    const newScore = calculateScore(mistakesCount, startTime);
+    setScore(newScore);
+    setIsWin(mistakesCount === 0);
+
+    saveBestScore(newScore);
+
     setStep('result');
+  };
+
+  const handleRecallKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (recallAnswers.some(ans => !ans || !isValidInput(ans))) {
+        alert(isFR ? "Veuillez remplir tous les champs avec uniquement des lettres." : "Please fill all fields with letters only.");
+        return;
+      }
+      handleRecallSubmit();
+    }
   };
 
   const handleRestart = () => {
@@ -185,11 +268,14 @@ function LandingPage() {
     setCurrentWord('');
     setRecallAnswers([]);
     setIsWin(false);
+    setScore(0);
+    setMistakes(0);
   };
 
   useEffect(() => {
     if (step === 'result') {
       if (isWin) {
+        confetti();
         winSound.current?.play();
       } else {
         loseSound.current?.play();
@@ -197,22 +283,6 @@ function LandingPage() {
     }
   }, [step, isWin]);
 
-  const isValidInput = (word) => /^[\p{L}]+$/u.test(word);
-
-  // Handle enter key to submit recall form
-  const handleRecallKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      // validate inputs before submit
-      if (recallAnswers.some(ans => !ans || !isValidInput(ans))) {
-        alert(isFR ? "Veuillez remplir tous les champs avec uniquement des lettres." : "Please fill all fields with letters only.");
-        return;
-      }
-      handleRecallSubmit();
-    }
-  };
-
-  // EXIT button handler: returns to landing screen, reset variables
   const handleExitClick = () => {
     setShowHelp(false);
     setShowSecondLogo(true);
@@ -356,10 +426,6 @@ function LandingPage() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  if (recallAnswers.some(ans => !ans || !isValidInput(ans))) {
-                    alert(isFR ? "Veuillez remplir tous les champs avec uniquement des lettres." : "Please fill all fields with letters only.");
-                    return;
-                  }
                   handleRecallSubmit();
                 }}
                 onKeyDown={handleRecallKeyDown}
@@ -375,14 +441,13 @@ function LandingPage() {
                       value={recallAnswers[idx] || ''}
                       onChange={(e) => {
                         const val = e.target.value.toLowerCase();
-                        // Only allow letters, max length enforced by maxLength prop
-                        if (/^[\p{L}]*$/u.test(val)) { // \p{L} = any Unicode letter, 'u' = Unicode flag
-                            handleRecallChange(idx, val);
+                        if (/^[\p{L}]*$/u.test(val)) {
+                          handleRecallChange(idx, val);
                         }
-
                       }}
                       spellCheck={false}
                       autoComplete="off"
+                      aria-label={isFR ? `Mot numéro ${idx + 1}` : `Word number ${idx + 1}`}
                     />
                   ))}
                 </div>
@@ -411,6 +476,16 @@ function LandingPage() {
               <button className="restart-button" onClick={handleRestart}>
                 {isFR ? "Rejouer" : "Play Again"}
               </button>
+              <p className="score-text">
+                {isFR ? `Score : ${score} | Meilleur : ${bestScore ?? '...'}` : `Score: ${score} | Best: ${bestScore ?? '...'}`}
+              </p>
+              {!isWin && (
+                <p className="mistake-text">
+                  {isFR
+                    ? `Vous avez fait ${mistakes} erreur(s)`
+                    : `You made ${mistakes} mistake(s)`}
+                </p>
+              )}
 
               <audio ref={winSound} src={winSoundFile} />
               <audio ref={loseSound} src={loseSoundFile} />
