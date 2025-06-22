@@ -19,7 +19,7 @@ import loseSoundFile from '../assets/lose.MP3';
         easy: ['fig', 'pea', 'yam'],
         medium: ['apple', 'grape', 'mango', 'lemon', 'melon'],
         hard: ['avocado', 'papaya', 'durian', 'pumpkin', 'cherry'],
-        insane: ['pomegranate', 'blackcurrant', 'watermelon', 'cranberries']
+        insane: ['pomegranate', 'starfruit', 'watermelon', 'cranberries', 'grapefruit']
       },
       animals: {
         easy: ['cat', 'dog', 'fox'],
@@ -39,7 +39,7 @@ import loseSoundFile from '../assets/lose.MP3';
         easy: ['fig', 'riz', 'mûr'],
         medium: ['pomme', 'raisin', 'melon', 'banan', 'ceris'],
         hard: ['avocat', 'papaye', 'citron', 'potiron', 'cerise'],
-        insane: ['grenadefruit', 'cassisnoir', 'pastèquefr', 'canneberge']
+        insane: ['pomme grenade', 'carambole', 'pastèque', 'canneberge', 'pamplemousse']
       },
       animals: {
         easy: ['rat', 'chat', 'pie'],
@@ -320,8 +320,8 @@ function LandingPage() {
               {showHelp && (
                 <div className="help-popup">
                   <p>{isFR
-                    ? "Choisissez un thème et une difficulté. Ensuite, cliquez sur Start pour commencer à mémoriser des mots qui changent lettre par lettre !"
-                    : "Choose a theme and a difficulty. Then click Start to begin memorizing words that morph letter by letter!"}
+                    ? "Choisissez un thème et une difficulté. Cliquez ensuite sur Démarrer pour commencer à mémoriser des mots qui changent (morph) ! Plus la difficulté est élevée, plus les mots sont longs et moins vous avez de temps pour les mémoriser."
+                    : "Choose a theme and a difficulty. Then click Start to begin memorizing words that morph! The higher the difficulty, the longer the words are and the less time you have to memorize them."}
                   </p>
                 </div>
               )}
