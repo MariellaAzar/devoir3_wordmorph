@@ -4,18 +4,143 @@ import '../styles/LandingPage.css';
 import logo1 from '../assets/logo1.png';
 import logo2 from '../assets/logo2.png';
 import playButton from '../assets/play-button.PNG';
+import startBtn from '../assets/img-start.png';
+import helpIcon from '../assets/interro-img.png';
+import exitIcon from '../assets/img-exit.png';
 import footerImg from '../assets/footer-img.png';
 
 function LandingPage() {
+  const [step, setStep] = useState("landing");
   const [showSecondLogo, setShowSecondLogo] = useState(false);
-  const [language, setLanguage] = useState('EN'); // Default language
+  const [language, setLanguage] = useState('EN');
+
+  const [category, setCategory] = useState('');
+  const [difficulty, setDifficulty] = useState('');
+  const [showHelp, setShowHelp] = useState(false);
+
+  const [wordSequence, setWordSequence] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentWord, setCurrentWord] = useState('');
+
+  const isFR = language === 'FR';
+
+  const wordDict = {
+    EN: {
+      fruits: {
+        easy: ['fig', 'pea', 'yam'],
+        medium: ['apple', 'grape', 'mango', 'lemon', 'melon'],
+        hard: ['avocado', 'papaya', 'durian', 'pumpkin', 'cherry'],
+        insane: ['pomegranate', 'blackcurrant', 'watermelon', 'cranberries']
+      },
+      animals: {
+        easy: ['cat', 'dog', 'fox'],
+        medium: ['zebra', 'horse', 'shark', 'otter', 'eagle'],
+        hard: ['dolphin', 'leopard', 'crocodile', 'panther', 'buffalo'],
+        insane: ['alligatoridae', 'orangutaness', 'hippopotamus']
+      },
+      objects: {
+        easy: ['pen', 'cup', 'key'],
+        medium: ['table', 'chair', 'phone', 'watch', 'glass'],
+        hard: ['printer', 'cabinet', 'backpack', 'notebook', 'umbrella'],
+        insane: ['refrigerator', 'microwaveoven', 'televisionset']
+      }
+    },
+    FR: {
+      fruits: {
+        easy: ['fig', 'riz', 'mûr'],
+        medium: ['pomme', 'raisin', 'melon', 'banan', 'ceris'],
+        hard: ['avocat', 'papaye', 'citron', 'potiron', 'cerise'],
+        insane: ['grenadefruit', 'cassisnoir', 'pastèquefr', 'canneberge']
+      },
+      animals: {
+        easy: ['rat', 'chat', 'pie'],
+        medium: ['zèbre', 'cheval', 'requin', 'loutre', 'aigle'],
+        hard: ['dauphin', 'léopard', 'crocodile', 'panthère', 'buffle'],
+        insane: ['alligatorid', 'orang-outan', 'hippopotam']
+      },
+      objects: {
+        easy: ['sty', 'tasse', 'clé'],
+        medium: ['table', 'chaise', 'téléph', 'montre', 'verre'],
+        hard: ['impriman', 'armoire', 'sac à dos', 'carnet', 'parapluie'],
+        insane: ['réfrigéra', 'micro-ondes', 'téléviseur']
+      }
+    }
+  };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowSecondLogo(true);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+    if (step === 'landing') {
+      const timer = setTimeout(() => {
+        setShowSecondLogo(true);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [step]);
+
+  useEffect(() => {
+    if (step === 'game') {
+      let wordsToDisplay = 3;
+      let delay = 2000;
+
+      switch (difficulty) {
+        case 'easy':
+          wordsToDisplay = 3;
+          delay = 2000;
+          break;
+        case 'medium':
+          wordsToDisplay = 5;
+          delay = 1500;
+          break;
+        case 'hard':
+          wordsToDisplay = 7;
+          delay = 1000;
+          break;
+        case 'insane':
+          wordsToDisplay = 10;
+          delay = 500;
+          break;
+        default:
+          wordsToDisplay = 3;
+          delay = 2000;
+      }
+
+      const catDict = wordDict[language]?.[category];
+      if (!catDict) {
+        alert(isFR ? "Catégorie invalide" : "Invalid category");
+        setStep('selection');
+        return;
+      }
+
+      const wordsList = catDict[difficulty];
+      if (!wordsList || wordsList.length === 0) {
+        alert(isFR ? "Difficulté invalide" : "Invalid difficulty");
+        setStep('selection');
+        return;
+      }
+
+      // Prendre la séquence demandée (ou la totalité si pas assez de mots)
+      const sequence = wordsList.slice(0, wordsToDisplay);
+
+      setWordSequence(sequence);
+      setCurrentIndex(0);
+      setCurrentWord(sequence[0]);
+
+      const interval = setInterval(() => {
+        setCurrentIndex((prev) => {
+          const nextIndex = prev + 1;
+          if (nextIndex >= sequence.length) {
+            clearInterval(interval);
+            setTimeout(() => setStep('recall'), 1000);
+            return prev;
+          } else {
+            setCurrentWord(sequence[nextIndex]);
+            return nextIndex;
+          }
+        });
+      }, delay);
+
+      return () => clearInterval(interval);
+    }
+  }, [step, difficulty, category, language, isFR]);
 
   const handleLogoClick = () => {
     window.location.reload();
@@ -31,43 +156,121 @@ function LandingPage() {
           className="logo-small clickable-logo"
           onClick={handleLogoClick}
         />
-
         <div className="navbar-title">
           <span className="title-part roboto-28">Welcome</span>{' '}
           <span className="title-part roboto-24">to</span>{' '}
           <span className="title-part scope-24">(the best memory game)</span>{' '}
           <span className="title-part roboto-28">Word Morph!</span>
         </div>
-
         <div className="lang-toggle">
-          <button
-            className={`lang-btn ${language === 'FR' ? 'selected' : ''}`}
-            onClick={() => setLanguage('FR')}
-          >
-            FR
-          </button>
-          <button
-            className={`lang-btn ${language === 'EN' ? 'selected' : ''}`}
-            onClick={() => setLanguage('EN')}
-          >
-            EN
-          </button>
+          <button className={`lang-btn ${isFR ? 'selected' : ''}`} onClick={() => setLanguage('FR')}>FR</button>
+          <button className={`lang-btn ${!isFR ? 'selected' : ''}`} onClick={() => setLanguage('EN')}>EN</button>
         </div>
       </header>
 
       {/* Main */}
       <main className="main-content">
         <div className="black-box">
-          {!showSecondLogo ? (
-            <img src={logo1} alt="Logo 1" className="logo-large" />
-          ) : (
-            <div className="logo-transition">
-              <img src={logo2} alt="Logo 2" className="logo-large" />
+          {step === 'landing' && (
+            !showSecondLogo ? (
+              <img src={logo1} alt="Logo 1" className="logo-large" />
+            ) : (
+              <div className="logo-transition">
+                <img src={logo2} alt="Logo 2" className="logo-large" />
+                <img
+                  src={playButton}
+                  alt="Play Button"
+                  className="play-button"
+                  onClick={() => setStep("selection")}
+                />
+              </div>
+            )
+          )}
+
+          {step === 'selection' && (
+            <div className="inner-pink-box">
+              <div className="category-selection-content">
+                <h2 className="subtitle">{isFR ? 'Catégorie' : 'Category'}</h2>
+                <select
+                  className="dropdown"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option value="">{isFR ? 'Choisissez une catégorie' : 'Choose a category'}</option>
+                  <option value="fruits">{isFR ? 'Fruits' : 'Fruits'}</option>
+                  <option value="animals">{isFR ? 'Animaux' : 'Animals'}</option>
+                  <option value="objects">{isFR ? 'Objets' : 'Objects'}</option>
+                </select>
+
+                <h2 className="subtitle">{isFR ? 'Difficulté' : 'Difficulty'}</h2>
+                <select
+                  className="dropdown"
+                  value={difficulty}
+                  onChange={(e) => setDifficulty(e.target.value)}
+                >
+                  <option value="">{isFR ? 'Choisissez une difficulté' : 'Choose a difficulty'}</option>
+                  <option value="easy">{isFR ? 'Facile' : 'Easy'}</option>
+                  <option value="medium">{isFR ? 'Moyenne' : 'Medium'}</option>
+                  <option value="hard">{isFR ? 'Difficile' : 'Hard'}</option>
+                  <option value="insane">{isFR ? 'Démentielle' : 'Insane'}</option>
+                </select>
+
+                <img
+                  src={startBtn}
+                  alt="Start"
+                  className="start-button"
+                  onClick={() => {
+                    if (category && difficulty) {
+                      setStep('game');
+                    } else {
+                      alert(isFR ? "Choisissez une catégorie et une difficulté" : "Please choose a category and difficulty");
+                    }
+                  }}
+                />
+              </div>
+
               <img
-                src={playButton}
-                alt="Play Button"
-                className="play-button"
+                src={helpIcon}
+                alt="Help"
+                className="help-icon"
+                onClick={() => setShowHelp(!showHelp)}
               />
+
+              <img
+                src={exitIcon}
+                alt="Exit"
+                className="exit-button"
+                onClick={() => {
+                  setShowHelp(false);
+                  setShowSecondLogo(true);
+                  setStep("landing");
+                }}
+              />
+
+              {showHelp && (
+                <div className="help-popup">
+                  <p>{isFR
+                    ? "Choisissez un thème et une difficulté. Ensuite, cliquez sur Start pour commencer à mémoriser des mots qui changent lettre par lettre !"
+                    : "Choose a theme and a difficulty. Then click Start to begin memorizing words that morph letter by letter!"}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {step === 'game' && (
+            <div className="game-screen">
+              <h2 className="game-subtitle">{isFR ? "MOT ACTUEL" : "CURRENT WORD"}</h2>
+              <div className="current-word-display">{currentWord.toUpperCase()}</div>
+
+              <h2 className="game-subtitle">{isFR ? "MOTS PRÉCÉDENTS" : "PREVIOUS WORDS"}</h2>
+              <div className="previous-words">
+                {wordSequence.slice(0, currentIndex).map((word, index) => (
+                  <div key={index} className="word-chip">
+                    {word.toUpperCase()}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
