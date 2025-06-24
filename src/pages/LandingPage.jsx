@@ -32,33 +32,33 @@ const wordDict = {
       easy: ['cat', 'dog', 'fox'],
       medium: ['zebra', 'horse', 'shark', 'otter', 'eagle'],
       hard: ['dolphin', 'leopard', 'crocodile', 'panther', 'buffalo'],
-      insane: ['alligatoridae', 'orangutaness', 'hippopotamus']
+      insane: ['alligator', 'orangutaness', 'hippopotamus']
     },
     objects: {
       easy: ['pen', 'cup', 'key'],
       medium: ['table', 'chair', 'phone', 'watch', 'glass'],
       hard: ['printer', 'cabinet', 'backpack', 'notebook', 'umbrella'],
-      insane: ['refrigerator', 'microwaveoven', 'televisionset']
+      insane: ['refrigerator', 'microwave', 'television']
     }
   },
   FR: {
     fruits: {
       easy: ['fig', 'riz', 'mûr'],
-      medium: ['pomme', 'raisin', 'melon', 'banan', 'ceris'],
+      medium: ['pomme', 'raisin', 'melon', 'banane', 'cerise'],
       hard: ['avocat', 'papaye', 'citron', 'potiron', 'cerise'],
       insane: ['pomme grenade', 'carambole', 'pastèque', 'canneberge', 'pamplemousse']
     },
     animals: {
       easy: ['rat', 'chat', 'pie'],
       medium: ['zèbre', 'cheval', 'requin', 'loutre', 'aigle'],
-      hard: ['dauphin', 'léopard', 'crocodile', 'panthère', 'buffle'],
-      insane: ['alligatorid', 'orang-outan', 'hippopotam']
+      hard: ['dauphin', 'léopard', 'crocodile', 'panthère', 'buffalo'],
+      insane: ['alligator', 'orang-outan', 'hippopotame']
     },
     objects: {
-      easy: ['sty', 'tasse', 'clé'],
-      medium: ['table', 'chaise', 'téléph', 'montre', 'verre'],
-      hard: ['impriman', 'armoire', 'sac à dos', 'carnet', 'parapluie'],
-      insane: ['réfrigéra', 'micro-ondes', 'téléviseur']
+      easy: ['bol', 'verre', 'clé'],
+      medium: ['table', 'chaise', 'portable', 'montre', 'verre'],
+      hard: ['imprimante', 'armoire', 'sac à dos', 'carnet', 'parapluie'],
+      insane: ['réfrigérateur', 'micro-ondes', 'téléviseur']
     }
   }
 };
