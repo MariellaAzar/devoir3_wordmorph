@@ -1,70 +1,37 @@
-# Getting Started with Create React App
+# 🧠 Word Morph
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Word Morph** is a multilingual, memory-based word game where players try to recall a sequence of changing words. The challenge scales with difficulty — the faster and more accurately you recall, the higher your score!
 
-## Available Scripts
+This project was built using **React**, **JavaScript**, **Firebase**, and **CSS** as part of a UX course in Summer 2025, with a focus on game usability, multilingual support, and responsive design.
 
-In the project directory, you can run:
+## 🎮 How It Works
 
-### `npm start`
+1. **Choose a category** (Fruits, Animals, Objects currently available) and a difficulty level.
+2. A sequence of words will appear one at a time — try to memorize them in the order shown!
+3. Once the sequence ends, you'll be asked to recall each word in order.
+4. Your **score** is based on recall accuracy and speed.
+5. See if you can beat your **best score** (stored using Firebase Firestore)!
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+🗣️ Supports both **English** and **French**.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 💡 Features
 
-### `npm test`
+- 💬 Bilingual UI (EN/FR)
+- 🔊 Sound effects for win/loss
+- 🌟 Confetti animation for perfect recall
+- 🔐 Firebase Firestore integration for saving best scores for an upcoming leaderboard feature
+- 📱 Responsive design for all screen sizes
+- 🧠 Dynamic difficulty scaling (word count + display speed)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🛠️ Tech Stack
 
-### `npm run build`
+- **React** (Functional Components + Hooks)
+- **JavaScript** (ES6+)
+- **Firebase Firestore** (for saving high scores)
+- **CSS** (custom styles + animations)
+- **canvas-confetti** for win celebrations
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🚀 Try It Out
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Check out the live demo here: [🔗 Word Morph Game]([https://your-demo-link-here.com](https://wordmorph.netlify.app/))
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
