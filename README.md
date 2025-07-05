@@ -26,12 +26,12 @@ This project was built using **React**, **JavaScript**, **Firebase**, and **CSS*
 ## 🛠️ Tech Stack
 
 - **React** (Functional Components + Hooks)
-- **JavaScript** (ES6+)
+- **JavaScript**
 - **Firebase Firestore** (for saving high scores)
 - **CSS** (custom styles + animations)
 - **canvas-confetti** for win celebrations
 
 ## 🚀 Try It Out
 
-Check out the live demo here: [🔗 Word Morph Game]([https://your-demo-link-here.com](https://wordmorph.netlify.app/))
+Check out the live demo here: [🔗 Word Morph Game](https://wordmorph.netlify.app/)
 
